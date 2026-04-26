@@ -70,8 +70,7 @@ export default function Home() {
   const counterResults = filterPokemon(counterSearch, [...myPokemon, ...counterPokemon]);
 
   return (
-    <main className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-
+    <main className="bg-zinc-50 dark:bg-zinc-950 lg:h-screen lg:flex lg:flex-col">
       {/* 헤더 */}
       <header className="text-center py-8 border-b border-zinc-200 dark:border-zinc-800">
         <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -83,11 +82,10 @@ export default function Home() {
       </header>
 
       {/* 메인 콘텐츠 */}
-      <div className="flex flex-col lg:flex-row max-w-6xl mx-auto">
+      <div className="flex flex-col lg:flex-row max-w-6xl mx-auto w-full lg:flex-1 lg:overflow-hidden">
 
         {/* 왼쪽: 선택 */}
-        <div className="w-full lg:w-1/2 p-6 lg:p-10 lg:border-r border-zinc-200 dark:border-zinc-800">
-
+        <div className="w-full lg:w-1/2 p-6 lg:p-10 lg:border-r border-zinc-200 dark:border-zinc-800 lg:overflow-y-auto">
           {/* 1. 쓰고 싶은 포켓몬 */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
@@ -264,7 +262,7 @@ export default function Home() {
         </div>
 
         {/* 오른쪽: 결과 */}
-        <div className="w-full lg:w-1/2 p-6 lg:p-10">
+        <div className="w-full lg:w-1/2 p-6 lg:p-10 lg:overflow-y-auto">
 
           {/* 로딩 중: 스켈레톤 */}
           {loading && (
@@ -337,6 +335,17 @@ export default function Home() {
         </div>
 
       </div>
+
+      {/* 푸터 */}
+      <footer className="border-t border-zinc-200 dark:border-zinc-800 py-4 text-center text-sm text-zinc-400">
+        <p>
+          Champions Copilot · Made by{" "}
+          <a href="https://github.com/SeungyongJasperLee" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Seungyong Lee</a>
+          {" "}·{" "}
+          <a href="https://github.com/SeungyongJasperLee/champions-copilot" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
+        </p>
+      </footer>
+
     </main>
   );
 }
