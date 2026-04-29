@@ -14,7 +14,24 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
   title: "Champions Copilot",
-  description: "포켓몬 AI 파티 빌더",
+  description: "포켓몬 챔피언스 AI 파티 빌더",
+  keywords: ["포켓몬", "챔피언스", "파티 빌더", "VGC", "Pokemon Champions", "AI", "팀빌더"],
+  icons: {
+    icon: "/favicon.png",
+  },
+  openGraph: {
+    title: "Champions Copilot",
+    description: "포켓몬 챔피언스 AI 파티 빌더",
+    url: "https://champions-copilot.vercel.app",
+    siteName: "Champions Copilot",
+    locale: "ko_KR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Champions Copilot",
+    description: "포켓몬 챔피언스 AI 파티 빌더",
+  },
 };
 
 export default function RootLayout({
