@@ -35,25 +35,34 @@ pokemon 배열은 반드시 6마리여야 합니다.
 필수 포켓몬은 반드시 포함되어야 합니다.
 evs의 합은 각 포켓몬당 510 이하여야 합니다.`;
 
-    const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
-        {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }],
-            }),
+    let lastError = "";
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+        const response = await fetch(
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                }),
+            }
+        );
+
+        const data = await response.json();
+        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+        console.log("Gemini raw:", text.slice(0, 200));
+
+        try {
+            const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+            const parsed = JSON.parse(cleaned);
+            if (parsed.pokemon && parsed.pokemon.length > 0) {
+                return NextResponse.json({ result: parsed });
+            }
+            lastError = "pokemon 배열이 비어있음";
+        } catch {
+            lastError = "JSON 파싱 실패";
         }
-    );
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-    try {
-        const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-        const parsed = JSON.parse(cleaned);
-        return NextResponse.json({ result: parsed });
-    } catch {
-        return NextResponse.json({ result: null, raw: text });
     }
-}
+
+    return NextResponse.json({ result: null, error: lastError });

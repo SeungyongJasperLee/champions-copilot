@@ -43,7 +43,7 @@ export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
       <div className="overflow-x-auto">
         <table className="w-full text-xs text-center border-collapse">
           <thead>
-            <tr className="text-zinc-400">
+            <tr className="text-zinc-400 bg-zinc-50 dark:bg-zinc-800/50">
               <th className="py-1 px-1">H</th>
               <th className="py-1 px-1">A</th>
               <th className="py-1 px-1">B</th>
@@ -70,7 +70,7 @@ export default function PokemonCard({ pokemon }: { pokemon: Pokemon }) {
         {pokemon.moves.map((move, i) => (
           <div
             key={i}
-            className="text-xs text-center py-1.5 px-2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300"
+            className="text-xs text-center py-1.5 px-2 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-green-100 dark:hover:bg-green-900/30 hover:text-green-700 dark:hover:text-green-400 transition-colors cursor-default"
           >
             {move}
           </div>

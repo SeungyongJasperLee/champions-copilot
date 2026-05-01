@@ -21,6 +21,8 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
+  const [toast, setToast] = useState<string>("");
+
   const styles = ["날씨", "트릭룸", "스탠다드", "기믹"];
 
   // 검색어로 포켓몬 필터링하는 함수
@@ -55,14 +57,25 @@ export default function Home() {
 
   async function handleRecommend() {
     setLoading(true);
-    setResult("");
-    const response = await fetch("/api/recommend", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ myPokemon, counterPokemon, teamStyle }),
-    });
-    const data = await response.json();
-    setResult(data.result);
+    setResult(null);
+    setToast("");
+    try {
+      const response = await fetch("/api/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ myPokemon, counterPokemon, teamStyle }),
+      });
+      const data = await response.json();
+      if (data.result && data.result.pokemon) {
+        setResult(data.result);
+      } else {
+        setToast("추천 생성에 실패했습니다. 다시 시도해주세요.");
+        setTimeout(() => setToast(""), 5000);
+      }
+    } catch {
+      setToast("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
+      setTimeout(() => setToast(""), 5000);
+    }
     setLoading(false);
   }
 
@@ -73,7 +86,8 @@ export default function Home() {
     <main className="bg-zinc-50 dark:bg-zinc-950 lg:h-screen lg:flex lg:flex-col">
       {/* 헤더 */}
       <header className="text-center py-8 border-b border-zinc-200 dark:border-zinc-800">
-        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+        <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-50 flex items-center justify-center gap-2">
+          <img src="/favicon.png" alt="" className="w-8 h-8" />
           Champions Copilot
         </h1>
         <p className="text-sm text-zinc-500 mt-1">
@@ -157,7 +171,7 @@ export default function Home() {
           </section>
 
           {/* 2. 대처하고 싶은 포켓몬 */}
-          <section className="mb-8">
+          <section className="mb-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
               대처하고 싶은 포켓몬
             </h2>
@@ -223,7 +237,7 @@ export default function Home() {
           </section>
 
           {/* 3. 파티 성격 */}
-          <section className="mb-8">
+          <section className="mb-8 pt-6 border-t border-zinc-200 dark:border-zinc-800">
             <h2 className="text-xl font-semibold text-zinc-800 dark:text-zinc-200 mb-1">
               파티 성격
             </h2>
@@ -257,7 +271,7 @@ export default function Home() {
                 : "bg-zinc-300 dark:bg-zinc-700 text-zinc-500 cursor-not-allowed"
               }`}
           >
-            {loading ? "추천 생성 중..." : "파티 추천받기"}
+            {loading ? "⏳ 추천 생성 중..." : "⚡ 파티 추천받기"}
           </button>
         </div>
 
@@ -321,31 +335,41 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4">
                 <h2 className="text-lg font-bold text-zinc-400 dark:text-zinc-500 mb-1">
-                  파티 추천 결과
+                  🎯 파티 추천 결과
                 </h2>
-                <p className="text-sm text-zinc-400 dark:text-zinc-600">
-                  <span className="lg:hidden">위에서 </span>
-                  <span className="hidden lg:inline">왼쪽에서 </span>
-                  포켓몬을 선택하고 추천받기를 눌러보세요
-                </p>
-              </div>
+              <p className="text-sm text-zinc-400 dark:text-zinc-600">
+                <span className="lg:hidden">위에서 </span>
+                <span className="hidden lg:inline">왼쪽에서 </span>
+                포켓몬을 선택하고 추천받기를 눌러보세요
+              </p>
+            </div>
             </div>
           )}
 
-        </div>
-
       </div>
 
-      {/* 푸터 */}
-      <footer className="border-t border-zinc-200 dark:border-zinc-800 py-4 text-center text-sm text-zinc-400">
-        <p>
-          Champions Copilot · Made by{" "}
-          <a href="https://github.com/SeungyongJasperLee" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Seungyong Lee</a>
-          {" "}·{" "}
-          <a href="https://github.com/SeungyongJasperLee/champions-copilot" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
-        </p>
-      </footer>
+      {/* 토스트 */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-lg bg-red-600 text-white text-sm font-medium shadow-lg animate-fade-in">
+          <div className="flex items-center gap-3">
+            <span>{toast}</span>
+            <button onClick={() => setToast("")} className="text-white/70 hover:text-white">✕</button>
+          </div>
+        </div>
+      )}
 
-    </main>
+    </div>
+
+      {/* 푸터 */ }
+  <footer className="border-t border-zinc-200 dark:border-zinc-800 py-4 text-center text-sm text-zinc-400">
+    <p>
+      Champions Copilot · Made by{" "}
+      <a href="https://github.com/SeungyongJasperLee" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:underline">Seungyong Lee</a>
+      {" "}·{" "}
+      <a href="https://github.com/SeungyongJasperLee/champions-copilot" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
+    </p>
+  </footer>
+
+    </main >
   );
 }
