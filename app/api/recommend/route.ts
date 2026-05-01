@@ -57,12 +57,16 @@ evs의 합은 각 포켓몬당 510 이하여야 합니다.`;
             const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
             const parsed = JSON.parse(cleaned);
             if (parsed.pokemon && parsed.pokemon.length > 0) {
+                // 성공했을 때만 여기서 바로 반환하고 종료
                 return NextResponse.json({ result: parsed });
             }
             lastError = "pokemon 배열이 비어있음";
         } catch {
             lastError = "JSON 파싱 실패";
         }
+        // 에러가 났다면 return 하지 않고 다음 루프(attempt 1)로 넘어갑니다.
     }
 
+    // 두 번의 시도 모두 실패했을 경우에만 마지막에 한 번 실행됩니다.
     return NextResponse.json({ result: null, error: lastError });
+} // <--- POST 함수를 닫는 중괄호
