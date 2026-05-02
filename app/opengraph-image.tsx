@@ -63,7 +63,7 @@ export default function Image() {
             gap: 16,
           }}
         >
-          {["쓰고 싶은 포켓몬", "대처할 포켓몬", "AI 파티 추천"].map(
+          {["AI 파티 추천"].map(
             (tag) => (
               <div
                 key={tag}
