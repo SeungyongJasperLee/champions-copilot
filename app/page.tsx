@@ -127,6 +127,7 @@ export default function Home() {
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`}
                     alt={p.name}
                     className="w-6 h-6"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                   {p.name}
                   <button
@@ -176,6 +177,7 @@ export default function Home() {
                             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`}
                             alt={p.name}
                             className="w-6 h-6"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                           />
                           {p.name}
                         </span>
@@ -206,6 +208,7 @@ export default function Home() {
                     src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`}
                     alt={p.name}
                     className="w-6 h-6"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                   {p.name}
                   <button
@@ -251,6 +254,7 @@ export default function Home() {
                             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.id}.png`}
                             alt={p.name}
                             className="w-6 h-6"
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                           />
                           {p.name}
                         </span><span className="text-xs text-zinc-400">{p.types.join(" · ")}</span>

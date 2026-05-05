@@ -1,14 +1,31 @@
 import { NextResponse } from "next/server";
+import { itemPool } from "@/app/data/pokemon";
 
 export async function POST(request: Request) {
     const { myPokemon, counterPokemon, teamStyle } = await request.json();
 
-    const prompt = `당신은 포켓몬 챔피언스 VGC 더블배틀 전문가입니다.
+    // 선택된 포켓몬의 상세 데이터 수집
+  const allSelected = [...myPokemon, ...counterPokemon];
+  const pokemonData = allSelected
+    .filter((p: any) => p.abilities || p.moves)
+    .map((p: any) => {
+      let info = `[${p.name}]`;
+      if (p.abilities) info += `\n  특성: ${p.abilities.join(", ")}`;
+      if (p.moves) info += `\n  사용 가능 기술: ${p.moves.join(", ")}`;
+      return info;
+    })
+    .join("\n\n");
+
+  const prompt = `당신은 포켓몬 챔피언스 VGC 더블배틀 전문가입니다.
 아래 조건에 맞는 6마리 파티를 추천해주세요.
 
 [필수 포켓몬] ${myPokemon.map((p: { name: string }) => p.name).join(", ")}
 ${counterPokemon.length > 0 ? `[대처 대상] ${counterPokemon.map((p: { name: string }) => p.name).join(", ")}` : ""}
 ${teamStyle ? `[파티 성격] ${teamStyle}` : ""}
+${pokemonData ? `\n[포켓몬 상세 데이터 — 반드시 이 데이터 내의 기술/특성만 사용하세요]\n${pokemonData}` : ""}
+
+[사용 가능 도구 목록]
+${itemPool.join(", ")}
 
 반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만 출력하세요.
 
@@ -33,6 +50,9 @@ ${teamStyle ? `[파티 성격] ${teamStyle}` : ""}
 
 pokemon 배열은 반드시 6마리여야 합니다.
 필수 포켓몬은 반드시 포함되어야 합니다.
+상세 데이터가 제공된 포켓몬은 해당 데이터 내의 기술/특성만 사용하세요.
+도구는 반드시 위 [사용 가능 도구 목록]에서만 선택하세요.
+파티 내 6마리의 도구는 절대 중복될 수 없습니다. 6마리 모두 서로 다른 도구를 지녀야 합니다.
 evs의 합은 각 포켓몬당 510 이하여야 합니다.`;
 
     let lastError = "";
